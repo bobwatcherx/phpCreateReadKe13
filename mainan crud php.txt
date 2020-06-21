@@ -1,0 +1,115 @@
+<?php
+  
+  $db = mysqli_connect("sql309.epizy.com", "epiz_25699269", "uPRyqmKqBCF", "epiz_25699269_21");
+
+
+  $msg = "";
+
+ 
+  if (isset($_POST['upload'])) {
+  	// Get image name
+  	$image = $_FILES['image']['name'];
+  	// Get text
+  	$nama = mysqli_real_escape_string($db, $_POST['nama']);
+  	$harga_jual = mysqli_real_escape_string($db, $_POST['harga_jual']);
+  	$harga_beli = mysqli_real_escape_string($db, $_POST['harga_beli']);
+  	$stok = mysqli_real_escape_string($db, $_POST['stok']);
+  	$kategori = mysqli_real_escape_string($db, $_POST['kategori']);
+
+  	// image file directory
+  	$target = "images/".basename($image);
+	$sql = "INSERT INTO `data_barang`(`id_barang`, `kategori`, `nama`, `gambar`, `harga_beli`, `harga_jual`, `stok`) VALUES (NULL,'$kategori','$nama','$image','$harga_beli','$harga_jual','$stok')";
+  
+  	// execute query
+  	mysqli_query($db, $sql);
+
+  	if (move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
+  		$msg = "Image uploaded successfully";
+  	}else{
+  		$msg = "Failed to upload image";
+  	}
+  }
+  $result = mysqli_query($db, "SELECT * FROM data_barang");
+?>
+<!DOCTYPE html>
+<html>
+<head>
+<title>pertemuan 13</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>     
+
+<!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+      <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script> 
+</head>
+<body>
+<div class="container">
+  <div class="z-depth-3" style="padding:30px">
+  <h3 style="color:orange">Program By : sri edy nurcahyo => 311810327</h3>
+  <h5 >Pendataan barang</h5>
+  <form method="POST" action="index.php" enctype="multipart/form-data">
+  	<input type="hidden"  name="size" value="1000000">
+  	<div>
+  	  <input type="file"class="waves-effect waves-light btn" name="image">
+  	</div>
+      <div class="input-field col s6">
+          <input placeholder="Placeholder" id="first_name" type="text" name="nama" class="validate">
+          <label for="first_name">nama</label>
+    </div>
+    <div class="input-field col s6">
+          <input placeholder="Placeholder" id="harga_beli" type="text" name="harga_beli" class="validate">
+          <label for="harga_beli">harga beli</label>
+    </div>
+      <div class="input-field col s6">
+          <input placeholder="Placeholder" id="harga_jual" type="text" name="harga_jual" class="validate">
+          <label for="harga_jual">harga jual</label>
+    </div>
+     <div class="input-field col s6">
+          <input placeholder="Placeholder" id="stok" type="text" name="stok" class="validate">
+          <label for="stok">stok</label>
+    </div>
+      <div class="input-field col s12">
+    <select class="js-example-basic-single" name="kategori">
+  <option value="komputer">komputer</option>
+  <option value="elektronik">elektronik</option>
+</select>
+    </div>
+    <br>
+    <br>
+     <br>
+    <br>
+     <br>
+    <br>
+  		<button type="submit"  class="waves-effect waves-light btn" name="upload">Tambahkan</button>
+
+  </div>
+  	</div>
+  </form>
+  <script>
+$(document).ready(function() {
+    $('.js-example-basic-single').select2();
+});
+</script>
+  </div>
+</div>
+<div id="content">
+  <?php
+    while ($row = mysqli_fetch_array($result)) {
+      echo "<div  style='margin:40px;padding:20px;background-color:#b388ff;border-radius:30px;box-shadow:0px 0px 20px #e040fb'>";
+           	echo "<img src='images/".$row['gambar']."'  style='width:320px;text-align:center'>";
+      	echo "<h3 style='color:white;text-align:center'> nama :".$row['nama']."</h3>";
+      	echo "<h5 style='color:white;text-align:center'> harga beli :".$row['harga_beli']."</h5>";
+      	echo "<h5 style='color:white;text-align:center'> harga jual :".$row['harga_jual']."</h5>";
+      	echo "<h5 style='color:white;text-align:center'> stok:".$row['stok']."</h5>";
+      	echo "<h5 style='color:white;text-align:center'> kategori:".$row['kategori']."</h5>";
+      echo "</div>";
+    }
+  ?>
+
+</div>
+</body>
+
+</html>
